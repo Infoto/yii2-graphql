@@ -29,7 +29,11 @@ trait ShouldValidate
             if (sizeof($rules)) {
                 //索引1的为args参数.
                 $args = ArrayHelper::getValue($arguments, 1, []);
-                $val = DynamicModel::validateData($args, $rules);
+                $defaultArgs = [];
+                foreach ($this->args() as $name => $attr) {
+                    $defaultArgs[$name] = null;
+                }
+                $val = DynamicModel::validateData(ArrayHelper::merge($defaultArgs, $args), $rules);
                 if ($error = $val->getFirstErrors()) {
                     $msg = 'input argument(' . key($error) . ') has validate error:' . reset($error);
                     throw new InvalidParamException($msg);
